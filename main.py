@@ -1,6 +1,6 @@
 import pandas as pd
 import sys
-from describe import describe
+from data_analysis.describe import describe
 
 if __name__ == "__main__":
 
@@ -8,6 +8,4 @@ if __name__ == "__main__":
     data = pd.DataFrame(data)
     # print(data[['Arithmancy', 'Herbology']])
     print(describe(data))
-    # print(data[['Hogwarts House']].describe())
-    # print(data.describe())
-    # print(data.info())
+    print(data.describe())
