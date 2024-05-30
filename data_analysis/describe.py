@@ -1,9 +1,9 @@
-import pandas as pd
+import pandas as pd  # type: ignore
 from math import sqrt
 import numpy as np
 
 
-def get_count_mean(data):
+def get_count_mean_std(data):
     sums = {}
     count = {}
     means = {}
@@ -21,7 +21,6 @@ def get_count_mean(data):
                 sums[key] += float(value)
                 count[key] += 1
 
-        print(count)
         if count[key] != 0:
             means[key] = f'{(sums[key]/count[key]):6f}'
             var = sum([(x - float(means[key])) ** 2 for i, x in column.items()
@@ -39,7 +38,7 @@ def get_count_mean(data):
     return (count_df, mean_df, std_df)
 
 
-def get_median(data, count, x):
+def get_quantiles(data, count, x):
 
     index = int(count) * x
     if (int(index) == index):
@@ -73,9 +72,9 @@ def quartiles(data):
             min[key] = column[0]
             max[key] = f'{max[key]:6f}'
             min[key] = f'{min[key]:6f}'
-            _25_percent[key] = get_median(column, len(column) - 1, 0.25)
-            _50_percent[key] = get_median(column, len(column) - 1, 0.50)
-            _75_percent[key] = get_median(column, len(column) - 1, 0.75)
+            _25_percent[key] = get_quantiles(column, len(column) - 1, 0.25)
+            _50_percent[key] = get_quantiles(column, len(column) - 1, 0.50)
+            _75_percent[key] = get_quantiles(column, len(column) - 1, 0.75)
 
     _25_percent_df = pd.DataFrame(list(_25_percent.items()))
     _25_percent_df.columns = ['', '25%']
@@ -91,13 +90,38 @@ def quartiles(data):
     return (_25_percent_df, _50_percent_df, _75_percent_df, max_df, min_df)
 
 
+def get_more_fields(data):
+    nunique = {}
+    n_missing = {}
+    var = {}
+    for key, column in data.items():
+        nunique[key] = len(set(column.dropna()))
+        n_missing[key] = len(set(column)) - nunique[key]
+
+        m = sum(column.dropna())/len(column.dropna()-1)
+        var[key] = sum((xi - float(m)) ** 2 for xi in column if xi == xi)\
+            / (len(column.dropna()) - 1)
+
+        if nunique[key] != 0:
+            nunique[key] = f'{nunique[key]:6f}'
+        n_missing[key] = f'{n_missing[key]:6f}'
+        var[key] = "{:.6e}".format(var[key])
+
+    nunique_df = pd.DataFrame(list(nunique.items()))
+    nunique_df.columns = ['', 'nunique']
+    n_missing_df = pd.DataFrame(list(n_missing.items()))
+    n_missing_df.columns = ['', 'n_missing']
+    var_df = pd.DataFrame(list(var.items()))
+    var_df.columns = ['', 'var']
+    return (nunique_df, n_missing_df, var_df)
+
+
 def describe(data):
-    df = data._get_numeric_data()
-    print(df)
-    count_df, mean_df, std_df = get_count_mean(df)
+    df = data._get_numeric_data()  # questionable ???
+    count_df, mean_df, std_df = get_count_mean_std(df)
     _25_percent_df, _50_percent_df, _75_percent_df, max_df, min_df = quartiles(
                                                                 df)
-
+    nunique, n_missing, var = get_more_fields(df)
     result_df = pd.concat([count_df,
                            mean_df['mean'],
                            std_df['std'],
@@ -105,6 +129,14 @@ def describe(data):
                            _25_percent_df['25%'],
                            _50_percent_df['50%'],
                            _75_percent_df['75%'],
-                           max_df['max']
+                           max_df['max'],
+                           nunique['nunique'],
+                           n_missing['n_missing'],
+                           var['var']
                            ], axis=1)
     return (result_df.set_index('').T)
+
+
+data = pd.read_csv('../data/dataset_train.csv')
+print(describe(data))
+print(data._get_numeric_data().var())
