@@ -33,4 +33,3 @@ class LogisticRegression:
 
     def score(self, X, y):
         return sum(self.predict(X) == y) / len(y)
-
