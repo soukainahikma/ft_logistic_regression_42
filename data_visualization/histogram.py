@@ -1,9 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import sys
 
 
-data = pd.read_csv(sys.argv[1])
+df = pd.read_csv('../data/dataset_train.csv')
 
 subjects = [
     'Arithmancy', 'Astronomy', 'Herbology', 'Defense Against the Dark Arts',
@@ -15,6 +14,7 @@ subjects = [
 fig, axes = plt.subplots(nrows=3, ncols=5, figsize=(20, 9))
 axes = axes.flatten()
 
+
 for idx, subject in enumerate(subjects):
     for house in df['Hogwarts House'].unique():
         house_data = df[df['Hogwarts House'] == house][subject].dropna()
@@ -23,5 +23,9 @@ for idx, subject in enumerate(subjects):
     axes[idx].set_title(subject)
     axes[idx].legend()
 
+# Hide any unused subplots
+for i in range(len(subjects), len(axes)):
+    axes[i].set_visible(False)
+
 plt.tight_layout()
-plt.show()
+plt.savefig('histogram.jpeg')

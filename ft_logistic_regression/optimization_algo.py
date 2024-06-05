@@ -77,3 +77,16 @@ def stochastic_gradient_descent(X, y, learning_rate=0.1,
             print(f"Iteration {i}, Loss: {loss}")
 
     return W, b
+
+
+def gradient_descent(X, y, learning_rate=0.1,
+                     n_iterations=1000):
+
+    n_samples, n_features = X.shape
+    w = np.ones(n_features)
+    for _ in range(n_iterations):
+        linear_pred = X.dot(w)
+        predictions = sigmoid(linear_pred)
+        dw = ((X.T).dot(y - predictions))/n_samples
+        w += learning_rate * dw
+    return (w)
