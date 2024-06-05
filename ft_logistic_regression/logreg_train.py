@@ -8,20 +8,21 @@ df_train = pd.read_csv('../data/dataset_train.csv')
 df_test = pd.read_csv('../data/dataset_test.csv')
 
 features = [
-            # 'Arithmancy',
-            # 'Astronomy',
-            'Herbology',
-            'Defense Against the Dark Arts',
-            'Divination',
-            'Muggle Studies',
-            # 'Ancient Runes',
-            # 'History of Magic',
-            # 'Transfiguration',
-            # 'Potions',
-            # 'Care of Magical Creatures',
-            'Charms',
-            # 'Flying'
-            ]
+            'Arithmancy',
+            'Astronomy',
+            # 'Herbology',
+            # 'Defense Against the Dark Arts',
+            # 'Divination',
+            # 'Muggle Studies',
+            'Ancient Runes',
+            'History of Magic',
+            'Transfiguration',
+            'Potions',
+            'Care of Magical Creatures',
+            # 'Charms',
+            'Flying'
+              
+]
 
 lable = 'Hogwarts House'
 
