@@ -17,17 +17,17 @@ def grad_log_loss(X, y_batch, y_pred, n_samples):
     return gradient_weights, gradient_bias
 
 
-def initialize_parameters(n_features, n_classes):
+def initialize_parameters(n_features):
     W = np.ones(n_features)
     b = np.zeros((1))
     return W, b
 
 
-def mini_batch_stochastic_gradient_descent(X, y, n_classes, batch_size=32,
+def mini_batch_stochastic_gradient_descent(X, y, batch_size=32,
                                            learning_rate=0.1,
                                            n_iterations=1000):
     n_samples, n_features = X.shape
-    W, b = initialize_parameters(n_features, n_classes)
+    W, b = initialize_parameters(n_features)
 
     for i in range(n_iterations):
         permutation = np.random.permutation(n_samples)
@@ -44,6 +44,31 @@ def mini_batch_stochastic_gradient_descent(X, y, n_classes, batch_size=32,
 
             W -= learning_rate * dW
             b -= learning_rate * db
+
+        if i % 100 == 0:
+            y_final = sigmoid(np.dot(X, W) + b)
+            loss = log_loss(y, y_final, n_samples)
+            print(f"Iteration {i}, Loss: {loss}")
+
+    return W, b
+
+def stochastic_gradient_descent(X, y, learning_rate=0.1,
+                                           n_iterations=1000):
+    n_samples, n_features = X.shape
+    W, b = initialize_parameters(n_features)
+
+    for i in range(n_iterations):
+        permutation = np.random.permutation(n_samples)
+        X_shuffled = X[permutation]
+        y_shuffled = y[permutation]
+
+        z = np.dot(X_shuffled, W) + b
+        y_pred = sigmoid(z)
+
+        dW, db = grad_log_loss(X_shuffled, y_shuffled, y_pred, n_samples)
+
+        W -= learning_rate * dW
+        b -= learning_rate * db
 
         if i % 100 == 0:
             y_final = sigmoid(np.dot(X, W) + b)
