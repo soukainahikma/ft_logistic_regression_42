@@ -1,6 +1,7 @@
-import pandas as pd  # type: ignore
+import pandas as pd
 from math import sqrt
 import numpy as np
+import sys
 
 
 def get_count_mean_std(data):
@@ -117,7 +118,8 @@ def get_more_fields(data):
 
 
 def describe(data):
-    df = data._get_numeric_data()  # questionable ???
+
+    df = data.select_dtypes(include='number')
     count_df, mean_df, std_df = get_count_mean_std(df)
     _25_percent_df, _50_percent_df, _75_percent_df, max_df, min_df = quartiles(
                                                                 df)
@@ -137,5 +139,5 @@ def describe(data):
     return (result_df.set_index('').T)
 
 
-data = pd.read_csv('../data/dataset_train.csv')
-print(describe(data).T[['n_missing', 'var']])
+data = pd.read_csv(sys.argv[1])
+print(describe(data))
