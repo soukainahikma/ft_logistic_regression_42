@@ -52,8 +52,9 @@ def mini_batch_stochastic_gradient_descent(X, y, batch_size=32,
 
     return W, b
 
+
 def stochastic_gradient_descent(X, y, learning_rate=0.1,
-                                           n_iterations=1000):
+                                n_iterations=1000):
     n_samples, n_features = X.shape
     W, b = initialize_parameters(n_features)
 

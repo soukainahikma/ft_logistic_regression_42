@@ -26,10 +26,18 @@ class LogisticRegression:
                 w += self.lr * dw
             self.weight.append((w, i))
 
-    def sgd(self, X, y):
+    def mini_batch_sgd(self, X, y):
         for i in np.unique(y):
             y_copy = np.where(y == i, 1, 0)
             w, b = sgd.mini_batch_stochastic_gradient_descent(X, y_copy, 4)
+            print(w)
+            w = np.insert(w, 0, b)
+            self.weight.append((w, i))
+
+    def sgd(self, X, y):
+        for i in np.unique(y):
+            y_copy = np.where(y == i, 1, 0)
+            w, b = sgd.stochastic_gradient_descent(X, y_copy, 4)
             print(w)
             w = np.insert(w, 0, b)
             self.weight.append((w, i))

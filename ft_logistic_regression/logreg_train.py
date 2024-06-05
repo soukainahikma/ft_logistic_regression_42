@@ -6,12 +6,17 @@ df_train = pd.read_csv('../data/dataset_train.csv')
 df_test = pd.read_csv('../data/dataset_test.csv')
 
 features = [
+            # 'Arithmancy',
             'Astronomy',
             'Herbology',
+            # 'Defense Against the Dark Arts',
             'Divination',
             'Muggle Studies',
             'Ancient Runes',
+            # 'History of Magic',
+            # 'Transfiguration',
             'Potions',
+            # 'Care of Magical Creatures',
             'Charms',
             'Flying'
 ]
@@ -34,7 +39,7 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 reg = LogisticRegression()
-reg.fit(X_train_scaled, y_train)
+reg.sgd(X_train_scaled, y_train)
 
 pred = reg.predict(X_test_scaled)
 
