@@ -43,7 +43,7 @@ X_test_scaled = scaler.fit_transform(X_test)
 X_test_scaled = scaler.transform(X_test)
 
 reg = LogisticRegression()
-reg.sgd(X_train_scaled, y_train)
+reg.fit(X_train_scaled, y_train)
 
 pred = reg.predict(X_test_scaled)
 

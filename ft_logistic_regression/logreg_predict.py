@@ -1,5 +1,5 @@
 import numpy as np
-import logreg as sgd
+import sgd as sgd
 
 
 class LogisticRegression:
@@ -35,6 +35,8 @@ class LogisticRegression:
             self.weight.append((w, i))
 
     def _predict_one(self, x):
+        # it's not necessar applying sigmoid function to Xθ.
+        # Since we just need to take the maximum value, it's not necessary.        
         return max((x.dot(w), c) for w, c in self.weight)[1]
 
     def predict(self, X):
