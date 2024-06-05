@@ -138,5 +138,4 @@ def describe(data):
 
 
 data = pd.read_csv('../data/dataset_train.csv')
-print(describe(data))
-print(data._get_numeric_data().var())
+print(describe(data).T[['n_missing', 'var']])
