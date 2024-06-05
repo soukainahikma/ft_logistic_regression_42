@@ -1,4 +1,5 @@
 import numpy as np
+import logreg as sgd
 
 
 class LogisticRegression:
@@ -12,17 +13,25 @@ class LogisticRegression:
         return 1/(1+np.exp(-x))
 
     def fit(self, X, y):
-        X = np.insert(X, 0, 1, axis=1)
-        n_samples, n_features = X.shape
+        X_ = np.insert(X, 0, 1, axis=1)
+        n_samples, n_features = X_.shape
 
         for i in np.unique(y):
             y_copy = np.where(y == i, 1, 0)
             w = np.ones(n_features)  # testing initialization with one
             for _ in range(self.n_iters):
-                linear_pred = X.dot(w)
+                linear_pred = X_.dot(w)
                 predictions = self.sigmoid(linear_pred)
-                dw = ((X.T).dot(y_copy - predictions))/n_samples
+                dw = ((X_.T).dot(y_copy - predictions))/n_samples
                 w += self.lr * dw
+            self.weight.append((w, i))
+
+    def sgd(self, X, y):
+        for i in np.unique(y):
+            y_copy = np.where(y == i, 1, 0)
+            w, b = sgd.mini_batch_stochastic_gradient_descent(X, y_copy, 4)
+            print(w)
+            w = np.insert(w, 0, b)
             self.weight.append((w, i))
 
     def _predict_one(self, x):
