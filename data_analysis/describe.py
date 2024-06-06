@@ -98,15 +98,16 @@ def get_more_fields(data):
     for key, column in data.items():
         nunique[key] = len(set(column.dropna()))
         n_missing[key] = len(set(column)) - nunique[key]
-
-        m = sum(column.dropna())/len(column.dropna()-1)
-        var[key] = sum((xi - float(m)) ** 2 for xi in column if xi == xi)\
-            / (len(column.dropna()) - 1)
+        var[key] = float('NaN')
+        if (not pd.isnull(column).all()):
+            m = sum(column.dropna())/len(column.dropna()-1)
+            var[key] = sum((xi - float(m)) ** 2 for xi in column if xi == xi)\
+                / (len(column.dropna()) - 1)
+            var[key] = "{:.6e}".format(var[key])
 
         if nunique[key] != 0:
             nunique[key] = f'{nunique[key]:6f}'
         n_missing[key] = f'{n_missing[key]:6f}'
-        var[key] = "{:.6e}".format(var[key])
 
     nunique_df = pd.DataFrame(list(nunique.items()))
     nunique_df.columns = ['', 'nunique']
@@ -140,5 +141,11 @@ def describe(data):
 
 
 if __name__ == "__main__":
-    data = pd.read_csv(sys.argv[1])
-    print(describe(data))
+    if (len(sys.argv) != 2):
+        sys.exit('Enter file name')
+    try:
+        data = pd.read_csv(sys.argv[1])
+        print(describe(data))
+        # print(data.describe())
+    except Exception as error:
+        sys.exit(error)
