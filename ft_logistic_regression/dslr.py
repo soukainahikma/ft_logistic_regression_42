@@ -17,7 +17,7 @@ class LogisticRegression:
             y_encoded = np.where(y == i, 1, 0)
             w = opt.gradient_descent(X_, y_encoded)
             self.weight.append((w, i))
-        self.save()
+        self.save('gd_model.pkl')
 
     def mb_sgd(self, X, y):
         for i in np.unique(y):
@@ -25,6 +25,8 @@ class LogisticRegression:
             w, b = opt.mini_batch_stochastic_gradient_descent(X, y_encoded, 4)
             w = np.insert(w, 0, b)
             self.weight.append((w, i))
+        self.save('mb_sgd_model.pkl')
+
 
     def sgd(self, X, y):
         for i in np.unique(y):
@@ -32,10 +34,11 @@ class LogisticRegression:
             w, b = opt.stochastic_gradient_descent(X, y_encoded, 4)
             w = np.insert(w, 0, b)
             self.weight.append((w, i))
+        self.save('sgd_model.pkl')
 
-    def save(self):
+    def save(self,path):
         try:
-            with open('model.pkl', 'wb') as f:
+            with open(path, 'wb') as f:
                 pickle.dump((self.weight), f)
         except ValueError:
             AssertionError('Error while saving model.txt')
@@ -55,6 +58,10 @@ class LogisticRegression:
     def predict(self, X, path):
         weight = self.get_file_info(path)
         return [self._predict_one(i, weight)
+                for i in np.insert(X, 0, 1, axis=1)]
+
+    def estimation(self, X):
+        return [self._predict_one(i, self.weight)
                 for i in np.insert(X, 0, 1, axis=1)]
 
     def score(self, X, y):

@@ -40,7 +40,7 @@ def train():
         X_test_scaled = scaler.transform(X_test)
 
         reg = LogisticRegression()
-        reg.gd(X_train_scaled, y_train)
+        reg.mb_sgd(X_train_scaled, y_train)
 
         pred = reg.estimation(X_test_scaled)
 
