@@ -1,33 +1,45 @@
 import pandas as pd
-from ft_logistic_regression.dslr import LogisticRegression
+from dslr import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 import sys
 
-df_test = pd.read_csv(sys.argv[1])
 
-features = [
-            'Astronomy',
-            'Herbology',
-            'Divination',
-            'Muggle Studies',
-            'Ancient Runes',
-            'Potions',
-            'Charms',
-            'Flying'
-]
+def predict():
+    if (len(sys.argv) != 3):
+        sys.exit('Enter <test data> <model.pkl>')
 
-lable = 'Hogwarts House'
+    try:
 
-X = df_test[features].values
+        df_test = pd.read_csv(sys.argv[1])
 
-scaler = StandardScaler()
-X_test_scaled = scaler.fit_transform(X)
+        features = [
+                    'Astronomy',
+                    'Herbology',
+                    'Divination',
+                    'Muggle Studies',
+                    'Ancient Runes',
+                    'Potions',
+                    'Charms',
+                    'Flying'
+        ]
 
-reg = LogisticRegression()
+        X = df_test[features].values
 
-pred = reg.predict(X_test_scaled)
+        scaler = StandardScaler()
+        X_test_scaled = scaler.fit_transform(X)
 
-houses = pd.DataFrame(pred, columns=['Hogwarts House'])
+        reg = LogisticRegression()
 
-houses.index.names = ['Index']
-houses.to_csv('./house.csv')
+        pred = reg.predict(X_test_scaled, sys.argv[2])
+
+        houses = pd.DataFrame(pred, columns=['Hogwarts House'])
+
+        houses.index.names = ['Index']
+        houses.to_csv('./house.csv')
+
+    except Exception as error:
+        sys.exit(error)
+
+
+if __name__ == "__main__":
+    predict()

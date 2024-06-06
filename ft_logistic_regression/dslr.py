@@ -1,7 +1,6 @@
 import numpy as np
 import optimization_algo as opt
 import pickle
-import sys
 
 
 class LogisticRegression:
@@ -46,16 +45,17 @@ class LogisticRegression:
             with open(path, 'rb') as f:
                 return pickle.load(f)
         except Exception as error:
-            sys.exit(error)
+            raise error
 
-    def _predict_one(self, x):
+    def _predict_one(self, x, weight):
         # it's not necessar applying sigmoid function to Xθ.
         # Since we just need to take the maximum value, it's not necessary.
-        weight = self.get_file_info('./model.pkl')
         return max((x.dot(w), c) for w, c in weight)[1]
 
-    def predict(self, X):
-        return [self._predict_one(i) for i in np.insert(X, 0, 1, axis=1)]
+    def predict(self, X, path):
+        weight = self.get_file_info(path)
+        return [self._predict_one(i, weight)
+                for i in np.insert(X, 0, 1, axis=1)]
 
     def score(self, X, y):
         return sum(self.predict(X) == y) / len(y)

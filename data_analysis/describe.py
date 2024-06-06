@@ -139,5 +139,6 @@ def describe(data):
     return (result_df.set_index('').T)
 
 
-data = pd.read_csv(sys.argv[1])
-print(describe(data))
+if __name__ == "__main__":
+    data = pd.read_csv(sys.argv[1])
+    print(describe(data))
